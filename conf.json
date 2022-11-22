@@ -3,5 +3,7 @@
     "game_options": [
         "Play with bot",
         "Play with human"
-    ]
+    ],
+    "database_name":"ttt.db",
+    "bot":"!bot!"
 }
