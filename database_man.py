@@ -1,5 +1,7 @@
 import sqlite3
 
+NULL = 0
+
 def create_table(database_name :str):
     with sqlite3.connect(database_name) as db:
         sql = db.cursor()
@@ -24,6 +26,13 @@ def insert_into(requester_username :str, accepter_username :str, is_requester_tu
         ))
         db.commit()
 
+def set_into(requester_username :str, database_name :str):
+    with sqlite3.connect(database_name) as db:
+        sql = db.cursor()
+        sql.execute("""
+        
+        """)
+
 def find_by_requester(requester_username :str, database_name :str) -> list:
     with sqlite3.connect(database_name) as db:
         sql = db.cursor()
@@ -32,5 +41,9 @@ def find_by_requester(requester_username :str, database_name :str) -> list:
         """).fetchall()
         return result
 
-def delete_by_requester(requester_username :str):
-    pass
+def delete_by_requester(requester_username :str, database_name :str):
+    with sqlite3.connect(database_name) as db:
+        sql = db.cursor()
+        sql.execute(f"""
+        DELETE FROM sessions WHERE requester_username='{requester_username}'
+        """)
