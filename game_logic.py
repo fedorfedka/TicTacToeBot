@@ -43,7 +43,7 @@ def edit_session_grid(session_id :str, row :int, column :int):
     with open('sess.json') as file:
         all_sess = json.load(file)
         for key, elem in all_sess.items():
-            if session_id in key:
+            if session_id in key and all_sess[key][3]['cells'][row][column] == EMPTY_SYM:
 
                 all_sess[key][3]['cells'][row][column] = X_SYM if get_session_turn(session_id) else O_SYM
                 all_sess[key][2] = False if get_session_turn(session_id) else True

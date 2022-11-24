@@ -22,9 +22,9 @@ def start_command(update :Update, context :CallbackContext):
 
 
 def stop_command(update :Update, context :CallbackContext):
-    if game_logic.is_requester_in_game(update):
+    if game_logic.is_requester_in_game(update.effective_user.id):
         #
-        #deletion func will be up here
+        game_logic.delete_session_by_requester(update.effective_user.id)
         #
         context.bot.send_message(
             chat_id=update.effective_chat.id,
@@ -51,49 +51,128 @@ def message_handler(update :Update, context :CallbackContext):
     
 
 def turns_handler(update :Update, context :CallbackContext):
+    global user_input
+    global user_input_chat
+    global procces_message
+
     if '1' in update.message.text:
+        try:
+            context.bot.delete_message(user_input_chat, user_input)
+        except Exception as e:
+            print(e)
+
         game_logic.edit_session_grid(game_logic.get_session_id_by_requester_id(update.effective_user.id), 0, 0)
+        
+        user_input = update.message.message_id
+        user_input_chat = update.effective_chat.id
 
     if '2' in update.message.text:
+        try:
+            context.bot.delete_message(user_input_chat, user_input)
+        except Exception as e:
+            print(e)
+
         game_logic.edit_session_grid(game_logic.get_session_id_by_requester_id(update.effective_user.id), 0, 1)
 
+        user_input = update.message.message_id
+        user_input_chat = update.effective_chat.id
+
     if '3' in update.message.text:
+        try:
+            context.bot.delete_message(user_input_chat, user_input)
+        except Exception as e:
+            print(e)
+
         game_logic.edit_session_grid(game_logic.get_session_id_by_requester_id(update.effective_user.id), 0, 2)
 
+        user_input = update.message.message_id
+        user_input_chat = update.effective_chat.id
+
     if '4' in update.message.text:
+        try:
+            context.bot.delete_message(user_input_chat, user_input)
+        except Exception as e:
+            print(e)
+
         game_logic.edit_session_grid(game_logic.get_session_id_by_requester_id(update.effective_user.id), 1, 0)
 
+        user_input = update.message.message_id
+        user_input_chat = update.effective_chat.id
+
     if '5' in update.message.text:
+        try:
+            context.bot.delete_message(user_input_chat, user_input)
+        except Exception as e:
+            print(e)
+
         game_logic.edit_session_grid(game_logic.get_session_id_by_requester_id(update.effective_user.id), 1, 1)
 
+        user_input = update.message.message_id
+        user_input_chat = update.effective_chat.id
+
     if '6' in update.message.text:
+        try:
+            context.bot.delete_message(user_input_chat, user_input)
+        except Exception as e:
+            print(e)
+
         game_logic.edit_session_grid(game_logic.get_session_id_by_requester_id(update.effective_user.id), 1, 2)
 
+        user_input = update.message.message_id
+        user_input_chat = update.effective_chat.id
+
     if '7' in update.message.text:
+        try:
+            context.bot.delete_message(user_input_chat, user_input)
+        except Exception as e:
+            print(e)
+
         game_logic.edit_session_grid(game_logic.get_session_id_by_requester_id(update.effective_user.id), 2, 0)
 
+        user_input = update.message.message_id
+        user_input_chat = update.effective_chat.id
+
     if '8' in update.message.text:
+        try:
+            context.bot.delete_message(user_input_chat, user_input)
+        except Exception as e:
+            print(e)
+        
         game_logic.edit_session_grid(game_logic.get_session_id_by_requester_id(update.effective_user.id), 2, 1)
 
+        user_input = update.message.message_id
+        user_input_chat = update.effective_chat.id
+
     if '9' in update.message.text:
+        try:
+            context.bot.delete_message(user_input_chat, user_input)
+        except Exception as e:
+            print(e)
+
         game_logic.edit_session_grid(game_logic.get_session_id_by_requester_id(update.effective_user.id), 2, 2)
+
+        user_input = update.message.message_id
+        user_input_chat = update.effective_chat.id
 
     game_logic.update_session_grid_png(game_logic.get_session_id_by_requester_id(update.effective_user.id))
 
-    context.bot.send_message(
-        chat_id=update.effective_chat.id,
-        text='text'
-    )
+    
     #open(f'{game_logic.SESSION_IMAGE_DIR}/'+str(game_logic.get_session_id_by_requester_id(update.effective_user.id))+'.png', 'rb')
-    context.bot.edit_message_text(
-        chat_id=update.effective_chat.id,
-        text='new!'
-    )
+    try:
+        context.bot.edit_message_media(
+            chat_id=update.effective_chat.id,
+            message_id=procces_message.message_id,
+            media=InputMediaPhoto(open(f'{game_logic.SESSION_IMAGE_DIR}/'+str(game_logic.get_session_id_by_requester_id(update.effective_user.id))+'.png', 'rb'))
+
+        )
+    except Exception as e:
+        print(e)
 
 
 #handler funcs
 
 def play_with_bot_handler(update :Update, context :CallbackContext):
+    global procces_message
     if read_conf.PB in update.message.text:
         send_msg(update, context, "You are playing with bot!")
 
@@ -110,6 +189,13 @@ def play_with_bot_handler(update :Update, context :CallbackContext):
             reply_markup=ReplyKeyboardMarkup(buttons)
             )
             
+        game_logic.update_session_grid_png(game_logic.get_session_id_by_requester_id(update.effective_user.id))
+
+        procces_message = context.bot.send_photo(
+            chat_id=update.effective_chat.id,
+            photo=open(f'{game_logic.SESSION_IMAGE_DIR}/'+str(game_logic.get_session_id_by_requester_id(update.effective_user.id))+'.png', 'rb')
+            
+        )
             
 
 def play_with_human_handler(update :Update, context :CallbackContext):
