@@ -146,4 +146,36 @@ def get_session_id_by_requester_id(requester_id :str) -> str:
 
     return ''
 
+def get_cell(session_id, row, column) -> str:
+    all_sess :dict
+    with open('sess.json') as file:
+        all_sess = json.load(file)
+        for key, elem in all_sess.items():
+            if session_id in key:
+                return elem[3]['cells'][row][column]
 
+    return ''
+
+
+def is_cell_empty(session_id, row, column) -> bool:
+    if get_cell(session_id, row, column) == EMPTY_SYM:
+        return True
+    
+    return False
+    
+
+def random_empty_cell(session_id):
+    row, column = random.randint(0, 2), random.randint(0,2)
+    while True:
+        if is_cell_empty(session_id, row, column):
+            break
+        else:
+            row, column = random.randint(0, 2), random.randint(0,2)
+
+    return row, column
+
+
+def bot_turn(session_id):
+    if get_session_turn(session_id) == False:
+        row, column = random_empty_cell(session_id)
+        edit_session_grid(session_id, row, column)
